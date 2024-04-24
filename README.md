@@ -1,2 +1,5 @@
 # kookaburra-scripts
-My scripts for ethical hacking
+
+### General scripts arguments
+
+-h : display help for the script
