@@ -36,13 +36,18 @@ def encrypt_file(filename, key):
         return encrypt_str(text, key)
 
 
+def read_file(filename):
+    with open(filename, "r") as file:
+        return file.read()
+
+
 if __name__ == "__main__":
-    arg1 = ""
-    if len(sys.argv) < 3 or argv[1] == "--help" or argv[1] == "-h":
-        arg1 = argv[1]
+    arg1 = argv[1]
+    if arg1 == "--help" or arg1 == "-h":
         print("Syntax: ./caesarEncrypt.py <file-to-encrypt> <caesar-key-file> <output-file>")
-    arg2 = argv[2]
-    encrypted_txt = encrypt_file(arg1, arg2)
+    key_file = argv[2]
+    key_file_content = read_file(key_file)
+    encrypted_txt = encrypt_file(arg1, key_file_content)
 
     with open(argv[3], "w") as out_file:
         out_file.write(encrypted_txt)
