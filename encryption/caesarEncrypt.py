@@ -9,7 +9,6 @@ Arguments: <file-to-encrypt> <caesar-key-file> <output-file>
 Format of the key: every character represents the replacement of the following characters (in order):
 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
 """
-import sys
 from sys import argv;
 
 key_format = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
