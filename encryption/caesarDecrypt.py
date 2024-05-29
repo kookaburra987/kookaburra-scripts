@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """
+DEPRECATED!
+
 Script to decrypt cyper text using Caesar Cipher.
 Supported characters: A-Z, a-z, and 0-9.
 Not supported characters will not be decrypted.
