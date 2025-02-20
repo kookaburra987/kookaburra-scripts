@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 """
-UNDER CONSTRUCTION
-
 Script to fire a way a bunch of HTTP calls to a list of provided URLs
 with the intention of discovering resources available on that URL.
 
@@ -20,12 +18,13 @@ from sys import argv
 
 from requests import RequestException
 
+
 def read_file(filename):
     with open(filename, "r") as file:
         return file.read()
 
 
-def fire_to_url(target_url, method):
+def fire_to_url(target_url, method, hits):
     if method != "GET":
         print("HTTP method " + method + " not supported")
 
@@ -33,7 +32,9 @@ def fire_to_url(target_url, method):
     if method == "GET":
         try:
             resp = requests.get(target_url)
-            analyse_response(resp)
+            is_hit = analyse_response(resp)
+            if is_hit:
+                hits.append(target_url + " " + str(resp.status_code))
         except requests.exceptions.ConnectionError:
             print("Connection error")
         except requests.exceptions.Timeout:
@@ -47,6 +48,8 @@ def analyse_response(resp):
     print(resp_status_code)
     if resp_status_code != 404:
         print("HIT!")
+        return True
+    return False
 
 
 if __name__ == "__main__":
@@ -60,8 +63,12 @@ if __name__ == "__main__":
         http_method = sys.argv[3]
 
     urls = read_file(arg1).split("\n")
+    hit_urls = []
     delay_seconds = float(sys.argv[4]) / 1000.0
     for url in urls:
         if url != "":
-            fire_to_url(url, http_method)
+            fire_to_url(url, http_method, hit_urls)
             time.sleep(delay_seconds)
+    with open(output_file, "w") as output_file:
+        for hit_url in hit_urls:
+            output_file.write(hit_url + "\n")
