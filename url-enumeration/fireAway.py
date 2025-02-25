@@ -11,13 +11,11 @@ GET calls are safe, but POST, PUT, PATCH and DELETE calls can do damage on the s
 Be careful with the delay in milliseconds.
 Some targets will not allow a high rate of calls.
 """
-import sys
+import argparse
 import time
 import requests
-from sys import argv
 
 from requests import RequestException
-
 
 def read_file(filename):
     with open(filename, "r") as file:
@@ -53,22 +51,20 @@ def analyse_response(resp):
 
 
 if __name__ == "__main__":
-    arg1 = argv[1]
-    if arg1 == "--help" or arg1 == "-h":
-        print("Syntax: ./fireAway.py <url-list-file> <output-file> <httpMethod> <delay>")
-        exit(0)
-    output_file = argv[2]
-    http_method = "GET"
-    if len(sys.argv) > 3:
-        http_method = sys.argv[3]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("url_list_file", help="file with list of URLs to call")
+    parser.add_argument("output_file", help="file to write the URLs that were hit to")
+    parser.add_argument("-m", "--method", help="HTTP-method to use", default="GET")
+    parser.add_argument("-d", "--delay", help="delay between calls in milliseconds", default=200, type=int)
+    args = parser.parse_args()
 
-    urls = read_file(arg1).split("\n")
+    urls = read_file(args.url_list_file).split("\n")
     hit_urls = []
-    delay_seconds = float(sys.argv[4]) / 1000.0
+    delay_seconds = float(args.delay) / 1000.0
     for url in urls:
         if url != "":
-            fire_to_url(url, http_method, hit_urls)
+            fire_to_url(url, args.method, hit_urls)
             time.sleep(delay_seconds)
-    with open(output_file, "w") as output_file:
+    with open(args.output_file, "w") as output_file:
         for hit_url in hit_urls:
             output_file.write(hit_url + "\n")
