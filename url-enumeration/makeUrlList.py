@@ -1,20 +1,9 @@
 #!/usr/bin/env python3
-"""
-Script to guess the URLs that might map to an HTTP-resource.
 
-Arguments: <guess-file> <output-file> <mask>
-
-guess-file is a file of words and numbers to add in the URLs
-
-The mask tells the part of the URL that is always the same.
-The part that is uncertain must be indicated with {$}.
-
-Example: http://localhost:8080/my-app/{$}/{$}
-"""
-from sys import argv;
+import argparse
 
 """
-Replaces the next {$} with a values of the guess-file.
+Replaces the next {$} with a values of the dictionary_file.
 The new masks are added to the mask_list.
 """
 
@@ -46,19 +35,17 @@ def read_file(filename):
 
 
 if __name__ == "__main__":
-    arg1 = argv[1]
-    if arg1 == "--help" or arg1 == "-h":
-        print("Syntax: ./makeUrlList.py <guess-file> <output-file> <mask>")
-        print("use {$} in mask for parts that are to be replaced")
-        exit(0)
-    output_file = argv[2]
-    mask = argv[3]
+    parser = argparse.ArgumentParser()
+    parser.add_argument("dictionary_file", help="file with words and numbers to combine in URLs")
+    parser.add_argument("output_file", help="file to write the URLs to")
+    parser.add_argument("mask", help="baseUrl in which {$} will be replaced")
+    args = parser.parse_args()
 
-    words = read_file(arg1).split("\n")
+    words = read_file(args.dictionary_file).split("\n")
     words.remove("")
-    urls = make_urls(mask, words)
+    urls = make_urls(args.mask, words)
 
-    with open(output_file, "w") as file:
+    with open(args.output_file, "w") as file:
         for url in urls:
             file.write(url)
             file.write("\n")
