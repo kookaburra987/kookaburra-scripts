@@ -12,9 +12,9 @@ def add_urls(msk, wrds, url_list):
     if msk.find('{$}') != -1:
         for word in wrds:
             new_mask = msk.replace('{$}', word, 1)
-            print(new_mask)
             add_urls(new_mask, wrds, url_list)
     else:
+        print(msk)
         url_list.append(msk)
 
 
@@ -42,7 +42,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     words = read_file(args.dictionary_file).split("\n")
-    words.remove("")
     urls = make_urls(args.mask, words)
 
     with open(args.output_file, "w") as file:
